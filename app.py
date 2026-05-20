@@ -309,10 +309,27 @@ async def run_scrape(contract_lengths, price_min, price_max):
     """Main async scrape orchestrator"""
     all_deals = []
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
+        import shutil, os, glob
+        # Try multiple known Chromium locations across Render/Railway/Docker
+        candidates = [
+            "/usr/bin/chromium",
+            "/usr/bin/chromium-browser",
+            "/usr/bin/google-chrome",
+            "/snap/bin/chromium",
+        ]
+        # Also check Playwright's own cache
+        pw_cache = glob.glob("/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome")
+        candidates = pw_cache + candidates
+        system_chromium = next((c for c in candidates if os.path.exists(c)), None)
+        if not system_chromium:
+            system_chromium = shutil.which("chromium") or shutil.which("chromium-browser")
+        launch_kwargs = dict(
             headless=True,
-            args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+            args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu", "--single-process"]
         )
+        if system_chromium:
+            launch_kwargs["executable_path"] = system_chromium
+        browser = await p.chromium.launch(**launch_kwargs)
         context = await browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             viewport={"width": 1280, "height": 900}
