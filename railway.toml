@@ -2,12 +2,12 @@
 builder = "NIXPACKS"
 
 [build.nixpacksPlan.phases.setup]
-nixPkgs = ["python311", "chromium"]
+nixPkgs = ["python311", "chromium", "nss", "nspr", "atk", "at-spi2-atk", "cups", "libdrm", "libxkbcommon", "libXcomposite", "libXdamage", "libXfixes", "libXrandr", "mesa", "alsa-lib", "pango", "cairo", "xorg.libX11"]
 
 [build.nixpacksPlan.phases.install]
 cmds = [
   "pip install -r requirements.txt",
-  "playwright install chromium"
+  "PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright playwright install chromium"
 ]
 
 [deploy]
