@@ -2,28 +2,7 @@
 builder = "NIXPACKS"
 
 [build.nixpacksPlan.phases.setup]
-nixPkgs = [
-  "python311",
-  "chromium",
-  "nss",
-  "nspr",
-  "atk",
-  "at-spi2-atk",
-  "cups",
-  "libdrm",
-  "libxkbcommon",
-  "libXcomposite",
-  "libXdamage",
-  "libXfixes",
-  "libXrandr",
-  "mesa",
-  "alsa-lib",
-  "pango",
-  "cairo",
-  "xorg.libX11",
-  "xorg.libXcursor",
-  "xorg.libXext"
-]
+nixPkgs = ["python311", "chromium"]
 
 [build.nixpacksPlan.phases.install]
 cmds = [
